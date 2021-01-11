@@ -5,19 +5,6 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="/2021/01/11/markdown/"/>
-    <url>/2021/01/11/markdown/</url>
-    
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://www.markdownguide.org/">Markdown</a>! This is your very first post. Check <a href="https://www.markdownguide.org/getting-started/">documentation</a> for more info.</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo clean<br></code></pre></td></tr></table></figure><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">9</span>):<br>print(i)<br></code></pre></td></tr></table></figure>]]></content>
-    
-    
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>Hello World</title>
     <link href="/2021/01/10/hello-world/"/>
     <url>/2021/01/10/hello-world/</url>
     
