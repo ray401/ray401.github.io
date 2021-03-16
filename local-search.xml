@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>GAP and FC</title>
+    <link href="/2021/03/16/GAP-and-FC/"/>
+    <url>/2021/03/16/GAP-and-FC/</url>
+    
+    <content type="html"><![CDATA[<p>在卷积网络的最后，通常会有一两层全连接层。全连接层的作用是把卷积输出的二维特征图转化成一个一维的向量，方便网络最后为分类做结果的输出。</p><p>全连接层的特点是，每一个节点都与上一层的节点连接，把前一层的输出特征都综合起来。通常，该层的权值参数是最多的。例如在VGG16中，第一个全连接层FC1中有<code>4096</code>个节点，上一层的POOL2的输出是<code>7*7*512=25088</code>个节点，那么需要的权值的数量是<code>4096*25088</code>个，将耗费非常大的内存。</p><p>以下图为例：</p><div align=center>    <img src='https://images2018.cnblogs.com/blog/1180120/201805/1180120-20180516224236756-2037276364.png'></div><p>最后<code>20*12*12</code>的特征图是如何变成<code>1*100</code>的向量的呢？靠的就是全连接层！</p><p>依靠<code>20*100</code>个<code>12*12</code>的卷积核卷积出来的，即对于每一个输入的<code>12*12</code>，用一个相同大小的核进行卷积操作，得到一个数。如果输入的深度是<code>20</code>，那么就用<code>20</code>个卷积核卷积后再相加。这样就把一张带深度的图变成了一个数字。</p><p>但是，全连接层的参数实在太多了！以上面的讨论为例，存在<code>20*12*12*100</code>个权重参数。</p><p>通常会使用全局平均池化 层（GAP）来代替全连接层（FC）。</p><blockquote><p>GAP 的基本思想是，用 feature map 直接表示属于某个类的 confidence map。假如有10个类，就在最后输出10个 feature map，每个 feature map 的值加起来求平均值，这10个数字就对应相应类别的概率或者置信度。然后把得到的平均值作为某个类别的 confidence value，在输入 softmax 中进行分类。实验验证，GAP 的效果并不比 FC 差。</p></blockquote><p>FC 与 GAP 的对比：</p><div align=center>    <img src='https://img2018.cnblogs.com/i-beta/1557203/202002/1557203-20200214174756572-937297546.jpg'></div><p> 具体参数量的对比：</p><div align=center>    <img src='https://img2018.cnblogs.com/i-beta/1557203/202002/1557203-20200214175820782-1032276794.jpg'></div><p>FC : 全连接先把 feature map 压缩成一列，然后接两层全连接层。首个全连接层对应的权重参数量为：<code>4*4*4*4</code>，第二个全连接层对应的权重参数量为<code>4*4</code>。</p><p>GAP：在得到 confidence value 的过程中，不存在权重参数，后面的全连接层对应的权重参数量为<code>4*4</code>。</p><p>GAP 的优势是：</p><ol><li>避免了 FC 参数数量巨大的问题，有助于压缩模型的大小。（GAP 没有参数，可以防止该层过拟合。）</li><li>可以接受任意尺寸的图像。</li><li>可以更好地将类别与最后一个卷积层的特征图对应起来。每一个通道对应一种类别，这样每一张特征图都可以看成该类别对应的类别置信图。</li></ol>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Residual Networks</title>
     <link href="/2021/03/16/Residual-Networks/"/>
     <url>/2021/03/16/Residual-Networks/</url>
