@@ -1,0 +1,572 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="ray">
+  <meta name="keywords" content="">
+  <title>Residual Networks - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Residual Networks">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-03-16 16:02" pubdate>
+        March 16, 2021 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      28
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Residual Networks</h1>
+            
+            <div class="markdown-body">
+              <h3 id="Residual-Block"><a href="#Residual-Block" class="headerlink" title="Residual Block"></a>Residual Block</h3><p>残差 residual 这一思想起源于论文<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1512.03385">Deep Residual Learning for Image Recognition</a>。该论文发现，如果存在某个 <strong>K</strong> 层的网络 <strong>f</strong> 是当前最优网络，那么可以构造一个更深的网络，其最后几层是网络 <strong>f</strong> 第 <strong>K</strong> 层输出的恒等映射（Identity Mapping），可以取得与网络 <strong>f</strong> 一致的效果。如果 <strong>K</strong> 不是已有网络的最佳层数，那么新构造的网络应该可以取得更好的效果。但是，实验结果却正好与此相反。</p>
+<div align=center>
+    <img src='https://pic2.zhimg.com/80/v2-dcf5688dad675cbe8fb8be243af5e1fd_720w.jpg'>
+</div>
+
+<p>随着网络的加深，反而出现了训练集准确率下降的问题，即深层网络的效果反而不如浅层网络。造成这种现象的原因究竟是什么呢？</p>
+<p>一般来讲，模型更复杂，其效果更好，也更容易发生过拟合现象。</p>
+<ol>
+<li>根据上述结果可以排除过拟合的可能，因为过拟合在训练过程中会发生 loss 持续减小，准确率一直增加的现象。（即若是过拟合，红线应该在黄线下面。）</li>
+<li>在网络中采用 <code>Batch Normalization</code> 方法也可以排除梯度消失和梯度爆炸的问题。</li>
+</ol>
+<p>把这个新发现的问题定义为网络的退化（<code>degradation</code>），即随着网络层数的增加，网络效果却急剧下降的情况。</p>
+<p>浅层网络的解空间是包含在深层网络的解空间中的，即深层网络的效果至少不会比浅层网络差。但大量实验结果表明，深层网络的效果往往不如浅层网络。更好的解明明存在，但找到的往往是效果不那么好的解，这个问题该如何解决？</p>
+<p>这显然是一个优化问题！上述现象还反映出，结构相似的模型优化难度是不一样的，模型越深优化的难度越高。</p>
+<p>论文作者从调整模型结构的角度入手来考虑优化模型，即引入残差块（<code>Residual Block</code>）。</p>
+<p>残差块表示如下：</p>
+<div align=center>
+    <img src='https://s2.ax1x.com/2020/02/21/3uUio4.png'>
+</div>
+
+<p>一个残差块有 2 条路径  $\mathcal{F(X)}$ 和 $\mathcal{X}$，$\mathcal{F(X)}$ 路径拟合残差，$\mathcal{X}$ 为 <code>identity mapping</code> 的恒等映射，称之为 <code>shortcut</code>。</p>
+<p> 图中的  $\oplus$ 为 <code>element-wise addition</code>，要求参与运算的 $\mathcal{F(X)}$ 和  $\mathcal{X}$ 的 <code>shape</code> 要相同。</p>
+<ol>
+<li>残差路径如何设计？</li>
+<li><code>shortcut</code> 路径如何设计？</li>
+<li><code>Residual Block</code> 之间如何连接？</li>
+</ol>
+<p>在论文中，残差路径大致可以分为 2 种，一种是 <code>bottleneck</code> 结构，即右下图中的 1$\times$1卷积层，先降维再升维，主要用于降低计算复杂度的考虑，将此种残差块称为 <code>bottleneck bock</code>。另一种结构如左下图所示，称之为 <code>basic block</code>，其由 2 个 3$\times$3 的卷积层构成。</p>
+<div align=center>
+    <img src='https://s2.ax1x.com/2020/02/21/3K34c8.png'>
+</div>
+
+
+
+<p><code>shortcut</code> 路径也分为 2 种，取决于残差路径是否改变了 <code>feature map</code>的数量和尺寸（即宽高和深度信息）。 一种是将输入 $\mathcal{X}$ 原封不动地输出，另一种将 $\mathcal{X}$ 经过 1$\times$1 卷积来升维/降维，目的就是为了保持与残差路径的输出 <code>shape</code> 保持一致以顺利进行 $\oplus$ 操作，其对网络性能的提升并不明显。</p>
+<blockquote>
+<p>需要注意，有 1$\times$1 卷积的 <code>shortcut</code> 路径在更新参数时，其路径的卷积权重参数也是要更新的。</p>
+</blockquote>
+<div align = center>
+    <img src = 'https://s2.ax1x.com/2020/02/23/3l4cD0.png'>
+</div>
+
+<p>至于 <code>Residual Block</code>之间的衔接，在原论文中，$\mathcal{F(X)}$ $+$ $\mathcal{X}$  经过 <code>ReLU</code> 后直接作为下一个 <code>Residual Block</code>的输入 $\mathcal{X}$ 。</p>
+<h3 id="ResNet-网络结构"><a href="#ResNet-网络结构" class="headerlink" title="ResNet 网络结构"></a>ResNet 网络结构</h3><p><code>ResNet</code> 是多个 <code>Residual Block</code> 的串联，下面直观感受下 <code>ResNet-34</code> 与 <code>34-layer plain net</code> 和 <code>VGG</code> 的对比。</p>
+<div align=center>
+    <img src='https://s2.ax1x.com/2020/02/21/3u8Wwj.png'>
+</div>
+
+<p><code>ResNet</code> 网络有如下几个特点：</p>
+<ul>
+<li>与 <code>plain net</code> 相比，<code>ResNet</code> 多了很多<strong>旁路</strong>，即 <code>shortcut</code> 路径。每一个 <code>shortcut</code> 首位圈出的 <code>layers</code> 构成一个 <code>Residual Block</code>。</li>
+<li><code>ResNet</code> 中，所有的 <code>Residual Block</code> 都没有 <code>pooling</code> 层，降采样是通过 <code>conv</code> 的 <code>stride</code> 实现的。</li>
+<li>分别在 <code>conv3_1</code>、<code>conv4_1</code>、<code>conv5_1</code> 的 <code>Residual Block</code>，降采样一倍，同时 <code>feature map</code> 的数量增加一倍，如上图虚线划定的 <code>block</code>。</li>
+<li>通过 <code>Average Pooling</code> 得到最终的特征，而不是通过 <code>FC</code>。</li>
+<li>每个卷积层后都跟有 <code>BatchNorm layer</code>，为了简化示意图，并没有标出。</li>
+</ul>
+<p><code>ResNet</code>结构非常容易修改和扩展，通过调整 <code>block</code> 内的 <code>channel</code> 数量以及堆叠的 <code>block</code> 数量，就可以很容易地调整网络的宽度和深度，来得到不同表达能力的网络，而不用过多地担心网络的 <code>degradation</code> 问题。通常情况下，只要训练足够，逐步加深网络，就可以获得更好的性能表现。</p>
+<p>下图为网络性能的对比：</p>
+<div align=center>
+    <img src='https://s2.ax1x.com/2020/02/24/38EfB9.png'>
+</div>
+
+<p>上面的实验说明，不断地增加 <code>ResNet</code> 的深度，甚至增加到 1000 层以上，网络也没有发生退化现象。由此说明 <code>Residual Block</code> 的有效性。</p>
+<p><code>ResNet</code> 的思想在于认为拟合残差比直接拟合潜在映射更容易优化 。</p>
+<p>可以通过绘制 <code>error surface</code> 来理解为什么网络加入 <code>shortcut</code> 之后更容易优化。</p>
+<div align=center>
+    <img src='https://s2.ax1x.com/2020/02/24/38Kd2t.png'>
+</div>
+
+<p>可以发现：</p>
+<ol>
+<li><code>ResNet-20 (no short)</code>浅层 <code>plain net</code> 的 <code>error surface</code> 还没有很复杂，优化也会很困难，当网络增加到 56 层后，网络优化难度急剧上升。对于 <code>plain net</code> ，随着深度增加，<code>error surface</code> 迅速恶化。</li>
+<li>引入 <code>shortcut</code> 后，<code>error surface</code> 变得平滑了一些，梯度的可预测性变得更好，优化也变得更容易。</li>
+</ol>
+<h3 id="Residual-Block-的分析与改进"><a href="#Residual-Block-的分析与改进" class="headerlink" title="Residual Block 的分析与改进"></a>Residual Block 的分析与改进</h3><p>论文 <code>Identity Mappings in Deep Residual Networks</code> 进一步研究 <code>ResNet</code>，通过 <code>ResNet</code>反向传播的理论分析及调整 <code>Residual Block</code> 的结构，得到了新的  <code>Residual Block</code> 形式，如下：</p>
+<div align=center>
+    <img src='https://s2.ax1x.com/2020/02/24/3G0uVJ.png'>
+</div>
+
+<blockquote>
+<p>注意，这里将 <code>shortcut</code> 视为主干路径，将残差路径视为旁路。</p>
+</blockquote>
+<p>新提出的 <code>Residual Block</code> 结构具有更强的泛化能力，能够更好的避免退化。新结构的具体变化在于：</p>
+<ol>
+<li>保持 <code>shortcut</code> 路径的<strong>纯净</strong>，可以让信息在前向传播和反向传播中平滑传递。如无必要，不引入 1$\times$1 卷积，同时将上图灰色路径上的 <code>ReLU</code> 移到 $\mathcal{F(X)}$ 路径上。</li>
+<li>在残差路径上，将 <code>BN</code> 和 <code>ReLU</code> 放在 <code>weight</code> 前作为 <code>pre-activation</code>，获得 <code>Ease of optimization</code> 以及 <code>Reducing overfitting</code> 的效果。</li>
+</ol>
+<p>下面具体解释一下！</p>
+<p>令 <code>h</code> 为 <code>shortcut</code> 路径上的变换，<code>f</code>为 <code>addition</code> 之后的变换，原 <code>Residual Block</code> 中 <code>f = ReLU</code> 当 <code>h</code> 和 <code>f</code> 均为 <code>identity mapping</code> 时，可以得到任意两层 $\mathcal{X}$<del>L</del> 和 $\mathcal{X}$<del>l</del> 之间的关系，此时信息可以在 $\mathcal{X}$<del>L</del> 和 $\mathcal{X}$<del>l</del> 间无损直达。</p>
+<p>给出如下公式：<br>$$<br>y_l = h(X_l) + \mathcal{F(X_l,W_l)}  \<br>X_{l+1} = \mathcal{f(y_l)}  \<br>X_{l+1} = X_l + \mathcal{F(x_l,W_l)}\<br>X_L = X_l + \sum_{i=1}^{L-1}\mathcal{F(X_i,W_i)}   \<br>$$<br>对于前向传播来说，分析公式可以得到：</p>
+<ol>
+<li>第 $\normalsize{L}$ 层的特征 $X_L$ 可以分为两个部分，第一部分是浅层网络表示 $X_l$，第二部分是残差函数映射 $\sum_{i=l}^{L-1}\mathcal{F(X_i,W_i)}$ ，表明模型在任意单元内都是一个残差形式。</li>
+<li>对于任意深度 $L$ 的特征 $X_L$ 来讲，它是前面所有残差模块的和，这与简单的不加 <code>shortcut</code> 网络完全相反。原因是，不加 <code>shortcut</code> 的网络在第 $L$ 层的特征 $X_L$ 是一系列向量乘的结果，即 $\prod_{i=0}^{L-1}W_{i}X_0$。（在忽略 <code>Batch Normalization</code> 和 <code>ReLU</code> 的情况下）</li>
+</ol>
+<p>基于上面第二点，我们发现这也有非常好的反向传播特性。假设损失为 $\Large\epsilon$，根据链式求导法则，得到如下结果：<br>$$<br>\frac{\partial\LARGE\epsilon}{\partial X_l} = \frac{\partial\LARGE\epsilon}{\partial X_L}\frac{\partial X_L}{\partial X_l} = \frac{\partial\LARGE\epsilon}{\partial X_L}\LARGE{(} \normalsize{1 + \frac{\partial}{\partial X_L}}\sum_{i=1}^{L-1}\mathcal{F(X_i,W_i)}\LARGE{)}  \<br>$$<br>即梯度 $\LARGE \frac{\partial\epsilon}{\partial X_l}$ 由两个部分组成，一部分 $\LARGE\frac{\partial \epsilon}{\partial X_L}$ 是不经过任何权重加权的信息流，另一部分是通过权重加权层的 $\LARGE\frac{\partial\Large\epsilon}{\partial X_L}\LARGE{(} \normalsize{1 + \frac{\partial}{\partial X_L}}\normalsize\sum_{i=1}^{L-1}\mathcal{F(X_i,W_i)}\LARGE{)}$，两部分的线性特性保证了信息可以直接反向传播到浅层。</p>
+<p>同时，反向传播中的这个 <code>1</code> 具有非常好的性质！即任意两层之间的反向传播，这一项都是 <code>1</code>，可以有效避免梯度消失和梯度爆炸。（此基于 <code>h</code> 和 <code>f</code> 均为 <code>identity mapping</code> ）</p>
+<p>如果 <code>h</code> 和 <code>f</code> 不是 <code>identity mapping</code> ，就会使得反向传播公式变得复杂，有可能导致梯度消失或爆炸，且层数越多越明显。</p>
+<blockquote>
+<p>值得注意的是，<code>BN</code> 层解决了 <code>plain net</code> 的梯度消失和爆炸问题，这里的 <code>1</code> 可以避免 <code>shortcut</code> 路径上的梯度消失和爆炸问题。</p>
+</blockquote>
+<p> <code>shortcut</code> 路径将反向传播由连乘形式变为加法形式，让网络最终的损失在反向传播时可以无损直达每一个 <code>block</code>，意味着每一个 <code>block</code> 的权重更新部分都直接作用在最终的损失上。观察前面前向传播的公式，发现虽然信息在任意两层间直达，但这种直达是隐含的，只能看到加法的结果，而无法清楚每个加数是多少。从信息通路上来讲，这是不彻底的，由此也推动了 <code>DenseNet</code>的诞生。</p>
+<p>对于残差路径的改进，作者进行了一系列对比试验，最终得出将 <code>BN</code> 和 <code>ReLU</code> 放在 <code>weight</code> 之前有利于提高模型的精度，将此命名为 <code>full preactivation</code> 结构。</p>
+<div align=center>
+    <img src='https://s2.ax1x.com/2020/02/24/3GcfnP.png'>
+</div>
+
+
+
+<p><code>ResNet</code> 的目的是为了解决网络退化问题。<code>Residual Block</code>的设计让学习 <code>identity mapping</code> 更容易，即使堆叠了过量的 <code>block</code>， 也可以让冗余的 <code>block</code> 学习成恒等映射，性能不会下降。即网络的深度是在训练过程中决定的，<code>ResNet</code> 具有某种深度自适应的能力。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/01/10/hello-world/">
+                        <span class="hidden-mobile">Hello World</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>
